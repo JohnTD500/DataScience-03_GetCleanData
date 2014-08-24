@@ -1,0 +1,330 @@
+---
+title: 'Data Science::3::Getting & Cleaning Data: Final Project'
+author: "John Tiede"
+date: "08/23/2014"
+output: pdf_document
+---
+
+Begin Project Statement
+=======================
+
+Getting and Cleaning Data
+-------------------------
+by Jeff Leek, PhD, Roger D. Peng, PhD, Brian Caffo, PhD
+
+The purpose of this project is to demonstrate your ability to collect, work with, and clean a data set. The goal is to prepare tidy data that can be used for later analysis. You will be graded by your peers on a series of yes/no questions related to the project. You will be required to submit: 1) a tidy data set as described below, 2) a link to a Github repository with your script for performing the analysis, and 3) a code book that describes the variables, the data, and any transformations or work that you performed to clean up the data called CodeBook.md. You should also include a README.md in the repo with your scripts. This repo explains how all of the scripts work and how they are connected. 
+
+One of the most exciting areas in all of data science right now is wearable computing - see for example this article . Companies like Fitbit, Nike, and Jawbone Up are racing to develop the most advanced algorithms to attract new users. The data linked to from the course website represent data collected from the accelerometers from the Samsung Galaxy S smartphone. A full description is available at the site where the data was obtained:
+
+http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+
+Here are the data for the project:
+
+https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+You should create one R script called run_analysis.R that does the following. 
+
+1) Merges the training and the test sets to create one data set.
+2) Extracts only the measurements on the mean and standard deviation for each measurement. 
+3) Uses descriptive activity names to name the activities in the data set.
+4) Appropriately labels the data set with descriptive variable names. 
+5) Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+
+End Project Statement
+=====================
+
+```{r}
+# Setup commands for this R-session:
+# Code to set working directory (enabled):
+if (TRUE) {
+    working.directory <- paste0(Sys.getenv("HOME"), "/School/Coursera/DataScience_JohnsHopkins/03_GetCleanData/Project")
+    setwd(working.directory)
+    getwd()
+}
+```
+
+The following block downloads the data.  It is disabled because this only has to be done once.  For the final script, I assume that this step has been done and the data has been unzipped.
+
+```{r}
+# 0) Download data:
+# Code to download data (disabled: assuming zip file has been downloaded and unzipped)
+if (FALSE) {
+    dataURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+
+    if (!file.exists("./getdata_projectfiles_Dataset.zip")) {
+        download.file(dataURL, "./getdata_projectfiles_Dataset.zip", method="curl")
+        dateDownloaded <- date()
+        # It is possible to write 'dataDownloaded' to a file, but I used the modification time of the zip file.
+    } else {
+        cat("Data file already exists.\n")
+    }
+    cat(paste("Zip file last modified: ", file.info(list.files(pattern="getdata_projectfiles_Dataset.zip"))$mtime, "\n"))
+
+    # Reference: http://stackoverflow.com/questions/8986818/automate-zip-file-reading-in-r
+    # Command below shows the files in the zip file.
+    #zipFileInfo <- unzip("./getdata_projectfiles_Dataset.zip", list=TRUE)
+}
+```
+
+Next, I want to read the data into R. Based on a forum post (https://class.coursera.org/getdata-006/forum/thread?thread_id=43), I will not merge the raw data from the 'Inertial Signals' directories.
+
+From the forum post, CTA David Hood said the following:
+
+"The general understanding is that you don't need the original inertial files, as they are not going to fit the pattern of the columns you are going to keep, and working with them is going to be rather painful (they are the original sensor readings that the values in x were calculated from)."
+
+#!#[alt text]("/home/jwt/School/Coursera/DataScience_JohnsHopkins/03_GetCleanData/Project/Slide1.png")
+
+My first attempt was to use the 'read.fwf()' function.  Applied to just 'filename.1', it crashed my system (OS: Linux/Kubuntu 14.04; Processor=4 X Intel Core i3-3225CPU @ 3.30GHz; RAM=4GB).  The total file size is about 26MB, but the function uses recursive techniques to perform its activities.  This somehow (memory leaks?) uses all available system memory.  After researching this, I decided to use the 'sqldf' package to read the data into R.
+
+Here are some useful references for my approach:
+
+* http://www.ats.ucla.edu/stat/r/modules/raw_data.htm
+* https://stackoverflow.com/questions/1727772/quickly-reading-very-large-tables-as-dataframes-in-r
+* http://sqlite.awardspace.info/syntax/sqlitepg08.htm
+* https://sites.google.com/site/timriffepersonal/DemogBlog/newformetrickforworkingwithbigishdatainr
+* http://stackoverflow.com/questions/2247045/chopping-a-string-into-a-vector-of-fixed-width-character-elements
+
+```{r}
+filename.1 <- "./UCI\ HAR\ Dataset/test/X_test.txt"
+filename.2 <- "./UCI\ HAR\ Dataset/test/subject_test.txt"
+filename.3 <- "./UCI\ HAR\ Dataset/test/y_test.txt"
+filename.4 <- "./UCI\ HAR\ Dataset/train/X_train.txt"
+filename.5 <- "./UCI\ HAR\ Dataset/train/subject_train.txt"
+filename.6 <- "./UCI\ HAR\ Dataset/train/y_train.txt"
+
+file.columns <- 561  # number of columns in file
+column.width <- 16   # fixed width of each column
+
+suppressPackageStartupMessages(library(sqldf))
+
+# Create a SQL command to read in fixed width format file:
+sql.1 <- "SELECT "
+for (col in 1:(file.columns-1)) { sql.1 <- paste0(sql.1, " SUBSTR(V1,", column.width*(col-1)+1, ",16) AS V", col, ", ") }
+sql.1 <- paste0(sql.1, " SUBSTR(V1,", column.width*(file.columns-1)+1, ",16) AS V", file.columns, " FROM f")
+
+# Read in test data:
+f <- file(filename.1)
+X.test <- sqldf(sql.1,
+                dbname=tempfile(),
+                file.format=list(header=FALSE, row.names=FALSE))
+
+# Check data:
+class(X.test)
+dim(X.test)
+class(X.test[1,1])
+X.test[1,1]
+X.test[1,561]
+
+# Read in the subject data:
+subject.test <- read.table(filename.2, header=FALSE)
+
+# Check data:
+class(subject.test)
+dim(subject.test)
+
+# Read in classification data:
+y.test <- read.table(file=filename.3, header=FALSE)
+
+# Check data:
+class(y.test)
+dim(y.test)
+
+# Column bind 'X.test' & 'subject.test' and 'y.test' into 'test' data frame:
+test <- cbind(X.test, subject.test, y.test)
+
+# Check data:
+class(test)
+dim(test)
+class(test[1,1])
+test[1,1]
+test[1,file.columns+1]
+test[1,file.columns+2]
+
+# Read in training data:
+f <- file(filename.4)
+X.train <- sqldf(sql.1,
+                dbname=tempfile(),
+                file.format=list(header=FALSE, row.names=FALSE))
+
+# Check data:
+class(X.train)
+dim(X.train)
+class(X.train[1,1])
+X.train[1,1]
+X.train[1,561]
+
+# Read in the subject data:
+subject.train <- read.table(filename.5, header=FALSE)
+
+# Check data:
+class(subject.train)
+dim(subject.train)
+
+# Read in classification data:
+y.train <- read.table(file=filename.6, header=FALSE)
+
+# Check data:
+class(y.train)
+dim(y.train)
+
+# Column bind 'X.train' & 'subject.train' & 'y.train' into 'train' data frame:
+train <- cbind(X.train, subject.train, y.train)
+
+# Check data:
+class(train)
+dim(train)
+class(train[1,1])
+train[1,1]
+train[1,file.columns+1]
+train[1,file.columns+2]
+```
+
+Problem 1: Merge the training & test sets to create one data set.
+
+I am using the data frame layout shown above.
+
+```{r}
+# Row bind 'train' & 'test' into 'all.data' data frame:
+all.data <- rbind(train, test)
+
+# Check data:
+class(all.data)
+dim(all.data)
+
+# Column 562 is the subject for which the data was collected and column 563 is
+#   the activity.  These columns should probably be converted to a factor type,
+#   but I am not doing that now.
+# For columns 1:561, convert column classes from 'character' to 'numeric':
+for (i in 1:file.columns) { all.data[,i] <- as.numeric(all.data[,i]) }
+
+# Check data:
+class(all.data)
+dim(all.data)
+class(all.data[1,1])
+class(all.data[1,file.columns+1])
+class(all.data[1,file.columns+2])
+all.data[1,1]
+
+# Name the columns:
+filename.7 <- "./UCI\ HAR\ Dataset/features.txt"
+features <- read.table(filename.7, header=FALSE, stringsAsFactors=FALSE)
+colnames(all.data) <- c(features[,2], "subject", "activity")
+
+# Check data:
+colnames(all.data)[1:4]
+colnames(all.data)[(dim(all.data)[2]-4):dim(all.data)[2]]
+```
+
+Problem 2: Extract only the mean and standard deviation for each measurement.
+
+What does this mean?  Looking in the 'UCI HAR Dataset' directory, there is a 'features.txt' file.  This file describes what each column of the measurements are.  Some columns have the (*regular expression notation*) **'.+-mean.+'** or **'.+-std.+'** as part of the labels.  These are the columns that should be extracted from 'all.data' and put into their own data frame.  Please note that there are columns names that have the string 'Mean' in them.  I do not believe that these are valid for problem 2 based on my reading of the codebook.  In addition, the 'subject' & 'activity' columns should be retained.  My assumption is this exercise is a process from one step to the next.  The columns 'subject' & 'activity' are required by the following problems.  (This is not very clear in the problem statements.)
+
+```{r}
+# Determine the columns where '-mean()' & '-std()' appear:
+mean.cols <- grep(".+-mean.+", colnames(all.data), perl=TRUE)
+std.cols <- grep(".+-std.+", colnames(all.data), perl=TRUE)
+
+# Combine 'mean.cols' & 'std.cols' & sort:
+extract.cols <- sort(c(mean.cols, std.cols))
+# Get column numbers for 'subject' & 'activity':
+subject.col <- match("subject", colnames(all.data))
+activity.col <- match("activity", colnames(all.data))
+# Add these to columns to extract:
+extract.cols <- c(extract.cols, subject.col, activity.col)
+
+# Create new data frame based on 'extract.cols':
+extract.df <- all.data[, extract.cols]
+
+# Check data:
+length(extract.cols)
+dim(extract.df)
+colnames(extract.df)
+```
+
+Problem 3: Use descriptive activity names to name the activities in the data set.
+
+What does this mean?  Looking in the 'UCI HAR Dataset' directory, there is a 'activity_label.txt' file.  This file describes the code for each activity for which the measurements were made.  Replace the code number in the activity column with the corresponding string in this file.  This should be done for the 'all.data' data frame, because this column does not exist in the 'extract.df' data frame.
+
+```{r}
+# Read the 'activity_labels.txt' file:
+filename.8 <- "./UCI\ HAR\ Dataset/activity_labels.txt"
+activity <- read.table(filename.8, header=FALSE, stringsAsFactors=FALSE)
+
+# Here is the brute force, ugly way to do it (takes a very, very long time):
+if (FALSE) {
+    for (row in 1:dim(all.data)[1]) {
+        for (act in 1:dim(activity[1])) {
+            if (all.data$activity[row] == activity[act,1]) { all.data$activity[row] <- activity[act,2]; break }
+        }
+    }
+}
+
+# Here's a somewhat (faster) better method:
+for (act in 1:dim(activity)[1]) {
+    extract.df$activity[extract.df$activity == activity[act,1]] <- activity[act,2]
+}
+
+# Check data:
+class(extract.df$activity[1])
+extract.df$activity[1:4]
+extract.df$activity[(dim(extract.df)[1]-4):dim(extract.df)[1]]
+```
+
+Problem 4: Appropriately label the data set with descriptive variable names.
+
+What does this mean?  I labeled the data columns with the original column names from 'features.txt'.  It does not seem like a good idea to change these names.  However, the '-' characters may be a problem, so I will change them to '.'.
+
+```{r}
+# Repair column names:
+extract.df.colnames <- gsub("-", ".", colnames(extract.df), perl=TRUE)
+
+# Rename columns:
+colnames(extract.df) <- extract.df.colnames
+
+# Check data:
+dim(extract.df)
+head(colnames(extract.df))
+```
+
+Problem 5: Create a second, independent tidy data set with the average of each variable for each activity and each subject.
+
+What does this mean?  Take the average of each variable for each subject while he is doing a particular activity - that is, the average for subject 1 while he is lying, the average for subject 1 while he is standing... and so on until you reach the average for each variable for subject 30 while he is lying, standing, ... 30 subjects doing 6 activities -> 180 combinations.
+
+Reference: http://martinsbioblogg.wordpress.com/2014/03/25/using-r-quickly-calculating-summary-statistics-from-a-data-frame/
+
+```{r}
+# Step 1: Melt the data frame:
+suppressPackageStartupMessages(library(reshape2))
+
+extract.df.melt <- melt(extract.df, id=c("subject","activity"), measure.vars=colnames(extract.df)[1:(dim(extract.df)[2]-2)])
+
+# Check data:
+class(extract.df.melt)
+dim(extract.df.melt)
+colnames(extract.df.melt)
+head(extract.df.melt)
+
+# Step 2: Cast for each subject:
+extract.df.melt.dcast <- dcast(extract.df.melt, subject + activity ~ variable, mean)
+
+# Check data:
+class(extract.df.melt.dcast)
+dim(extract.df.melt.dcast)
+head(extract.df.melt.dcast)
+
+# Step 3: Make 'extract.df.melt.dcast' tidy:
+final.df <- melt(extract.df.melt.dcast, id=c("subject","activity"), measure.vars=colnames(extract.df.melt.dcast)[3:dim(extract.df.melt.dcast)[2]])
+
+# Check data:
+class(final.df)
+dim(final.df)
+head(final.df, n=24)
+```
+
+For submission, please upload your data set as a txt file created with write.table() using row.name=FALSE.
+
+```{r}
+write.table(final.df, file="./submission_file.table", row.name=FALSE)
+```
+
+
