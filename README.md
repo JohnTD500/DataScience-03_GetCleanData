@@ -27,8 +27,10 @@ How the Analysis Script Works
 1. Filenames created for loading the testing & training data sets, subject information, and classification.
 2. Create a Structured Query Language (SQL) command based on the fixed widths of the test/train data sets.
 3. Read the various data files into the R session.
-    3.1 Use the "sqldf" package.  (I had difficulty using 'read.fwf'.  After a lot of looking I decided this was my best option.)
-    3.2 Use 'read.table' to read in the subject & classification files.
+
+* Use the "sqldf" package.  (I had difficulty using 'read.fwf'.  After a lot of looking I decided this was my best option.)
+* Use 'read.table' to read in the subject & classification files.
+
 4. Column bind subject & classification data to the test & training data sets.
 5. Row bind the set is step 4 together.
 6. Name the new columns.
