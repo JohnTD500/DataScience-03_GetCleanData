@@ -97,9 +97,12 @@ After generating the table, I cut and pasted back into the markdown document.
 More markdown examples:
 http://stackoverflow.com/editing-help
 
-Markdown plug-in (Chrome):
+Markdown extension (Chrome):
 http://stackoverflow.com/questions/9843609/view-md-file-offline
 https://stackedit.io
+
+Markdown extension (Firefox):
+https://addons.mozilla.org/en-US/firefox/addon/markdown-viewer/
 
 Markdown videos:
 https://www.youtube.com/watch?v=6A5EpqqDOdk
