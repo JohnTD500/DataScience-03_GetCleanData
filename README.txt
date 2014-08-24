@@ -96,3 +96,11 @@ After generating the table, I cut and pasted back into the markdown document.
 
 More markdown examples:
 http://stackoverflow.com/editing-help
+
+Markdown plug-in (Chrome):
+http://stackoverflow.com/questions/9843609/view-md-file-offline
+https://stackedit.io
+
+Markdown videos:
+https://www.youtube.com/watch?v=6A5EpqqDOdk
+https://www.youtube.com/watch?v=-apyD5f9nwg
