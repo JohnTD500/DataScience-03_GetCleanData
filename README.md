@@ -24,21 +24,21 @@ Running the Analysis Script
 How the Analysis Script Works
 -----------------------------
 
-1) Filenames created for loading the testing & training data sets, subject information, and classification.
-2) Create a Structured Query Language (SQL) command based on the fixed widths of the test/train data sets.
-3) Read the various data files into the R session.
-    3.1) Use the "sqldf" package.  (I had difficulty using 'read.fwf'.  After a lot of looking I decided this was my best option.)
-    3.2) Use 'read.table' to read in the subject & classification files.
-4) Column bind subject & classification data to the test & training data sets.
-5) Row bind the set is step 4 together.
-6) Name the new columns.
-8) In the 'activity' column, replace code number with descriptive names.
-7) Extract columns for mean and standard deviation from combined data sets and put into a new data frame.
-9) Rename the columns of extracted data set replacing '-' with '.'.
-10) Take the extracted data set and make it "tidy":
-    10.1) Using the "reshape2" package, melt the extracted data set using "subject" & "activity" as the identification variables.
-    10.2) Cast the melted data frame using the formula "subject + activity ~ variable".
-    10.3) Melt this data set again to get the following format:
+1. Filenames created for loading the testing & training data sets, subject information, and classification.
+2. Create a Structured Query Language (SQL) command based on the fixed widths of the test/train data sets.
+3. Read the various data files into the R session.
+    3.1. Use the "sqldf" package.  (I had difficulty using 'read.fwf'.  After a lot of looking I decided this was my best option.)
+    3.2. Use 'read.table' to read in the subject & classification files.
+4. Column bind subject & classification data to the test & training data sets.
+5. Row bind the set is step 4 together.
+6. Name the new columns.
+8. In the 'activity' column, replace code number with descriptive names.
+7. Extract columns for mean and standard deviation from combined data sets and put into a new data frame.
+9. Rename the columns of extracted data set replacing '-' with '.'.
+10. Take the extracted data set and make it "tidy":
+    10.1. Using the "reshape2" package, melt the extracted data set using "subject" & "activity" as the identification variables.
+    10.2. Cast the melted data frame using the formula "subject + activity ~ variable".
+    10.3. Melt this data set again to get the following format:
         "subject", "activity", "variable", "value"
 
 Problem Statement
@@ -59,10 +59,10 @@ https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Datas
 
 You should create one R script called run_analysis.R that does the following. 
 
-1) Merges the training and the test sets to create one data set.
-2) Extracts only the measurements on the mean and standard deviation for each measurement. 
-3) Uses descriptive activity names to name the activities in the data set
-4) Appropriately labels the data set with descriptive variable names. 
-5) Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
+1. Merges the training and the test sets to create one data set.
+2. Extracts only the measurements on the mean and standard deviation for each measurement. 
+3. Uses descriptive activity names to name the activities in the data set
+4. Appropriately labels the data set with descriptive variable names. 
+5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
 
 Good luck!
