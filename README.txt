@@ -93,3 +93,6 @@ http://www.tablesgenerator.com/markdown_tables#
 
 I created the tables in Libre Office Calc, then cut-and-pasted to the website.
 After generating the table, I cut and pasted back into the markdown document.
+
+More markdown examples:
+http://stackoverflow.com/editing-help
