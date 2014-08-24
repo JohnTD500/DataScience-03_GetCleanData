@@ -97,9 +97,14 @@ After generating the table, I cut and pasted back into the markdown document.
 More markdown examples:
 http://stackoverflow.com/editing-help
 
-Markdown extension (Chrome):
+Markdown extension (Chrome): To use this:
+  1. Open new tab
+  2. On toolbar at far left, press 'Apps' button
+  3. Select 'StackEdit' app
+
 http://stackoverflow.com/questions/9843609/view-md-file-offline
 https://stackedit.io
+
 
 Markdown extension (Firefox):
 https://addons.mozilla.org/en-US/firefox/addon/markdown-viewer/

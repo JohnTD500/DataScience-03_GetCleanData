@@ -72,7 +72,9 @@ From the forum post, CTA David Hood said the following:
 
 "The general understanding is that you don't need the original inertial files, as they are not going to fit the pattern of the columns you are going to keep, and working with them is going to be rather painful (they are the original sensor readings that the values in x were calculated from)."
 
-#!#[alt text]("/home/jwt/School/Coursera/DataScience_JohnsHopkins/03_GetCleanData/Project/Slide1.png")
+Here is a very helpful figure created by David Hood:
+
+<img src="/home/jwt/School/Coursera/DataScience_JohnsHopkins/03_GetCleanData/Project/Slide1.png" />
 
 My first attempt was to use the 'read.fwf()' function.  Applied to just 'filename.1', it crashed my system (OS: Linux/Kubuntu 14.04; Processor=4 X Intel Core i3-3225CPU @ 3.30GHz; RAM=4GB).  The total file size is about 26MB, but the function uses recursive techniques to perform its activities.  This somehow (memory leaks?) uses all available system memory.  After researching this, I decided to use the 'sqldf' package to read the data into R.
 
