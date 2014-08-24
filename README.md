@@ -19,7 +19,7 @@ Running the Analysis Script
 ---------------------------
 
 1. Open R session in the directory where the **"UCI HAR Dataset"** directory is present.
-2. At the command prompt: *source("./run_analysis.R)"
+2. At the R command prompt: *source("./run_analysis.R)*
 
 How the Analysis Script Works
 -----------------------------
@@ -36,9 +36,11 @@ How the Analysis Script Works
 7. Extract columns for mean and standard deviation from combined data sets and put into a new data frame.
 9. Rename the columns of extracted data set replacing '-' with '.'.
 10. Take the extracted data set and make it "tidy":
-    10.1 Using the "reshape2" package, melt the extracted data set using "subject" & "activity" as the identification variables.
-    10.2 Cast the melted data frame using the formula "subject + activity ~ variable".
-    10.3 Melt this data set again to get the following columns: "subject", "activity", "variable", "value"
+  10.1 Using the "reshape2" package, melt the extracted data set using "subject" & "activity" as the identification variables.
+  10.2 Cast the melted data frame using the formula "subject + activity ~ variable".
+  10.3 Melt this data set again to get the following columns: "subject", "activity", "variable", "value"
+
+Further details can be found in the *run_analysis.R* file.  I developed the program in RStudio.  The analysis program, including debugging statements and other code that didn't make the final program, can be found in the *Project.Rmd* file.
 
 Problem Statement
 -----------------
