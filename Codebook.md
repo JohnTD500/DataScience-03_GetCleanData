@@ -16,9 +16,11 @@ Quoting from the original codebook:
 >
 > Finally a Fast Fourier Transform (FFT) was applied to some of these signals producing fBodyAcc-XYZ, fBodyAccJerk-XYZ, fBodyGyro-XYZ, fBodyAccJerkMag, fBodyGyroMag, fBodyGyroJerkMag. (Note the 'f' to indicate frequency domain signals).
 
+```
 (Note 1: Velocity is the first derivative of position.
          Acceleration is the second derivative of position.
          Jerk is the third derivative of position.)
+```
 
 The follow table shows the definitions for the variables in the tidy dataset:
 
