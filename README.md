@@ -3,7 +3,46 @@ DataScience-03_GetCleanData
 
 Created for the Coursera course "Getting and Cleaning Data" which is part of the Johns Hopkins University Data Science Specialization.
 
-Below is the problem statement for the class project.
+File Manifest
+-------------
+
+| Filename            | Purpose                                                      |
+|---------------------|--------------------------------------------------------------|
+| Codebook.md         | Codebook for the tidy data set submitted for peer assessment |
+| Project.Rmd         | R Markdown file for Rstudio session                          |
+| README.md           | Markdown README file                                         |
+| README.txt          | Original README text file                                    |
+| run_analysis.R      | R source code file for running the project analysis          |
+| submission_file.txt | Tidy data set submitted for peer assessment                  |
+
+Running the Analysis Script
+---------------------------
+
+1) Open R session in the directory where the **"UCI HAR Dataset"** directory is present.
+2) At the command prompt: *source("./run_analysis.R)"
+
+How the Analysis Script Works
+-----------------------------
+
+1) Filenames created for loading the testing & training data sets, subject information, and classification.
+2) Create a Structured Query Language (SQL) command based on the fixed widths of the test/train data sets.
+3) Read the various data files into the R session.
+    3.1) Use the "sqldf" package.  (I had difficulty using 'read.fwf'.  After a lot of looking I decided this was my best option.)
+    3.2) Use 'read.table' to read in the subject & classification files.
+4) Column bind subject & classification data to the test & training data sets.
+5) Row bind the set is step 4 together.
+6) Name the new columns.
+8) In the 'activity' column, replace code number with descriptive names.
+7) Extract columns for mean and standard deviation from combined data sets and put into a new data frame.
+9) Rename the columns of extracted data set replacing '-' with '.'.
+10) Take the extracted data set and make it "tidy":
+    10.1) Using the "reshape2" package, melt the extracted data set using "subject" & "activity" as the identification variables.
+    10.2) Cast the melted data frame using the formula "subject + activity ~ variable".
+    10.3) Melt this data set again to get the following format:
+        "subject", "activity", "variable", "value"
+
+Problem Statement
+-----------------
 
 Getting and Cleaning Data
 by Jeff Leek, PhD, Roger D. Peng, PhD, Brian Caffo, PhD

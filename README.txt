@@ -83,3 +83,13 @@ in need of improvement. You may also use this space to explain your grading
 decisions.
 
 << >>
+
+********
+Good markdown reference: https://daringfireball.net/projects/markdown/basics
+
+To generate markdown tables, I used this website:
+
+http://www.tablesgenerator.com/markdown_tables#
+
+I created the tables in Libre Office Calc, then cut-and-pasted to the website.
+After generating the table, I cut and pasted back into the markdown document.
