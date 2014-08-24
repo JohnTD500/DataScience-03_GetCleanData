@@ -6,7 +6,7 @@ Human Activity Recognition Using Smartphones Dataset
 
 The following codebook was adapted from the "README.txt" and "features_info.txt" files found in the directory **"UCI HAR Dataset"**.
 
-This codebook reflects certain minor changes to the names made to the original codebook.  Name changes were kept to a minimum to insure easy transitions between the reference dataset and the modified dataset.  Specifically, the '-' characters were converted to "." characters.  The R language was used to process this data, and there can be issues with the '-' character in strings being interpreted as arithmetic operations.  In contrast, '.' characters are part of the R language S3 naming conventions.
+This codebook reflects certain minor changes to the names made to the original codebook.  Name changes were kept to a minimum to insure easy transitions between the reference dataset and the modified dataset.  Specifically, the '-' characters were converted to "." characters.  The R language was used to process this data, and there can be issues with the '-' character in strings being interpreted as an arithmetic operation (subtraction).  In contrast, '.' characters are part of the R language S3 naming conventions.
 
 Quoting from the original codebook:
 
@@ -16,14 +16,32 @@ Quoting from the original codebook:
 >
 > Finally a Fast Fourier Transform (FFT) was applied to some of these signals producing fBodyAcc-XYZ, fBodyAccJerk-XYZ, fBodyGyro-XYZ, fBodyAccJerkMag, fBodyGyroMag, fBodyGyroJerkMag. (Note the 'f' to indicate frequency domain signals).
 
-[Note 1: Velocity is the first derivative of position.
+(Note 1: Velocity is the first derivative of position.
          Acceleration is the second derivative of position.
-         Jerk is the third derivative of position.]
-[Note 2: 't' before variable name indicates time domain measurement.
-         'f' before variable name indicates frequency domain measurement.]
+         Jerk is the third derivative of position.)
 
-The following are definitions of the variables in the tidy dataset:
+The follow table shows the definitions for the variables in the tidy dataset:
 
+| Variable Name         | Domain | Source        | Acceleration Signal | Derivative | quantity     | Component |
+|-----------------------|--------|---------------|---------------------|------------|--------------|-----------|
+| tBodyAcc.mean().X     | time   | Accelerometer | Body                | second     | mean         | X         |
+| tBodyAcc.mean().Y     | time   | Accelerometer | Body                | second     | mean         | Y         |
+| tBodyAcc.mean().Z     | time   | Accelerometer | Body                | second     | mean         | Z         |
+| tBodyAcc.std().X      | time   | Accelerometer | Body                | second     | standard dev | X         |
+| tBodyAcc.std().Y      | time   | Accelerometer | Body                | second     | standard dev | Y         |
+| tBodyAcc.std().Z      | time   | Accelerometer | Body                | second     | standard dev | Z         |
+| tGravityAcc.mean().X  | time   | Accelerometer | Gravity             | second     | mean         | X         |
+| tGravityAcc.mean().Y  | time   | Accelerometer | Gravity             | second     | mean         | Y         |
+| tGravityAcc.mean().Z  | time   | Accelerometer | Gravity             | second     | mean         | Z         |
+| tGravityAcc.std().X   | time   | Accelerometer | Gravity             | second     | standard dev | X         |
+| tGravityAcc.std().Y   | time   | Accelerometer | Gravity             | second     | standard dev | Y         |
+| tGravityAcc.std().Z   | time   | Accelerometer | Gravity             | second     | standard dev | Z         |
+| tBodyAccJerk.mean().X | time   | Accelerometer |                     | third      |              |           |
+| tBodyAccJerk.mean().Y | time   | Accelerometer |                     | third      |              |           |
+
+
+Variable                         Defintion
+-------------------------------  ---------
 tBodyAcc.mean().X                Mean body linear acceleration, X component
 tBodyAcc.mean().Y                Mean body linear acceleration, Y component
 tBodyAcc.mean().Z                Mean body linear acceleration, Z component
